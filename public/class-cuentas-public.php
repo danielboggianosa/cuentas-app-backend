@@ -100,4 +100,19 @@ class Cuentas_Public {
 
 	}
 
+	// BASE DE DATOS
+	global $wpdb;
+
+	// EMPRESAS
+
+	public function list_all_empresas(){
+		return array('titulo'=>'Aprendo', 'texto'=>'Feliz');
+	}
+
+	public function add_cuentas_empresa_endpoints() {
+		register_rest_route( 'cuentas/v1', '/empresa/list', array(
+			'methods' => 'GET',
+			'callback' => array($this, 'list_all_empresas'),
+		) );
+	}
 }

@@ -13,7 +13,7 @@
  * @package           Cuentas
  *
  * @wordpress-plugin
- * Plugin Name:       Cuentas Aprendo Feliz
+ * Plugin Name:       Cuentas Backend Aprendo Feliz
  * Plugin URI:        cuentas.aprendofeliz.org
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
  * Version:           1.0.0
