@@ -122,6 +122,18 @@ class Cuentas {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cuentas-public.php';
 
+		/**
+		 * The class responsible for defining all actions that occur in the public-facing
+		 * side of the site.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/auth/class-cuentas-auth.php';
+
+		/**
+		 * The class responsible for defining all actions that occur in the public-facing
+		 * side of the site.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/routes/class-cuentas-empresa-routes.php';
+
 		$this->loader = new Cuentas_Loader();
 
 	}
@@ -173,7 +185,13 @@ class Cuentas {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
-		$this->loader->add_action( 'rest_api_init', $plugin_public, 'add_cuentas_empresa_endpoints' );
+		// $this->loader->add_action( 'rest_api_init', $plugin_public, 'add_cuentas_empresa_endpoints' );
+
+		$cuentas_auth = new Cuentas_Auth( $this->get_plugin_name(), $this->get_version() );
+		$cuentas_empresa = new Cuentas_Empresa_Routes( $this->get_plugin_name(), $this->get_version() );
+
+		$this->loader->add_action( 'rest_api_init', $cuentas_auth, 'add_endpoints' );
+		$this->loader->add_action( 'rest_api_init', $cuentas_empresa, 'add_endpoints' );
 
 	}
 
