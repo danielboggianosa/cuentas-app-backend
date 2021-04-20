@@ -164,6 +164,12 @@ class Cuentas {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/routes/class-cuentas-presupuesto-routes.php';
 
+		/**
+		 * The class responsible for defining all actions that occur in the public-facing
+		 * side of the site.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/routes/class-cuentas-usuario-routes.php';
+
 		$this->loader = new Cuentas_Loader();
 
 	}
@@ -224,6 +230,7 @@ class Cuentas {
 		$cuentas_subcategoria = new Cuentas_Subcategoria_Routes( $this->get_plugin_name(), $this->get_version() );
 		$cuentas_registro = new Cuentas_Registro_Routes( $this->get_plugin_name(), $this->get_version() );
 		$cuentas_presupuesto = new Cuentas_Presupuesto_Routes( $this->get_plugin_name(), $this->get_version() );
+		$cuentas_usuario = new Cuentas_Usuario_Routes( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'rest_api_init', $cuentas_auth, 'add_endpoints' );
 		$this->loader->add_action( 'rest_api_init', $cuentas_empresa, 'add_endpoints' );
