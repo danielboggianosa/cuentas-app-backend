@@ -121,7 +121,7 @@ class Cuentas_Registro_Models {
         $wpdb->get_results($sql, OBJECT);
 
         $filas_total = $wpdb->num_rows;
-        $paginas_total = round($filas_total / $filas, 0, PHP_ROUND_HALF_UP);
+        $paginas_total = ceil($filas_total / $filas);
         $offset = "OFFSET ".($pagina * $filas - $filas);
 
         $sql = "SELECT r.id, r.fecha, r.ingreso, r.descripcion, r.entidad, r.operacion, r.monto, r.imagen_url, r.cuenta_id, r.categoria_id, c.nombre as categoria, r.subcategoria_id, s.nombre as subcategoria 

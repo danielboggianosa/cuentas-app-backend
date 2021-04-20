@@ -68,7 +68,7 @@ class Cuentas_Empresa_Models {
         $sql = "SELECT id FROM cu_empresas AS e INNER JOIN cu_users_has_empresas AS u ON e.id = u.empresa_id WHERE u.user_id = $usuario $busqueda";
         $wpdb->get_results($sql, OBJECT);
         $filas_total = $wpdb->num_rows;
-        $paginas_total = round($filas_total / $filas, 0, PHP_ROUND_HALF_UP);
+        $paginas_total = ceil($filas_total / $filas);
         $offset = "OFFSET ".($pagina * $filas - $filas);
 
         $sql = "SELECT id, nombre, notas, image_url FROM cu_empresas AS e INNER JOIN cu_users_has_empresas AS u ON e.id = u.empresa_id WHERE u.user_id = $usuario $busqueda $orden $limit $offset;";

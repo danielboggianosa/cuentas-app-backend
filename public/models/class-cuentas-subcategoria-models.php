@@ -102,7 +102,7 @@ class Cuentas_Subcategoria_Models {
         $wpdb->get_results($sql, OBJECT);
 
         $filas_total = $wpdb->num_rows;
-        $paginas_total = round($filas_total / $filas, 0, PHP_ROUND_HALF_UP);
+        $paginas_total = ceil($filas_total / $filas);
         $offset = "OFFSET ".($pagina * $filas - $filas);
 
         $sql = "SELECT id, nombre FROM cu_subcategorias AS c WHERE c.categoria_id = $categoria $busqueda $orden $limit $offset;";
