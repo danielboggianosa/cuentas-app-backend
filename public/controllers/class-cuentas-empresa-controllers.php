@@ -97,19 +97,19 @@ class Cuentas_Empresa_Controllers {
 	
 	public function list_one($data){		
 		return $this->_empresa_models->list_one(
-            $_helpers->get_user_id(),
+            $this->_helpers->get_user_id(),
             $data['id'],
         );
 	}
 
 	public function create($request){
-		$usuario = $_helpers->get_user_id();
+		$usuario = $this->_helpers->get_user_id();
 		$data = array(
 			"nombre" => $request['nombre'],
 			"notas" => $request['notas'],
 			"image_url" => $request['imagen']
 		);
-		return $_empresa_models->create($usuario, $data);
+		return $this->_empresa_models->create($usuario, $data);
 	}
 
 	public function update($request){
