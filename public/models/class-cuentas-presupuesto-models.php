@@ -263,6 +263,27 @@ class Cuentas_Presupuesto_Models {
         return $inserted;
     }
 
+    private function update_presupuesto_categorias($presupuesto, $categorias){
+        global $wpdb;
+        $table = 'cu_presupuestos_has_categorias';
+
+        for($i=0; $i < sizeof($categorias); $i++){
+            $cat = $categorias[$i];
+			$data = array(
+				"meta" => $cat['meta'],
+				"gasto" => $cat['gasto'],
+				"diferencia" => $cat['diferencia'],
+			);
+            $cat_id = $cat['categoria_id'];
+			$where = array(
+				"presupuesto_id" => $presupuesto,
+				"categoria_id" => $cat_id
+			);
+			$wpdb->update($table, $data, $where);            
+        }
+        return null;
+    }
+
     private function insert_presupuesto_subcategorias($presupuesto, $subcategorias){
         global $wpdb;
         $table = 'cu_presupuestos_has_categorias_has_subcategorias';
@@ -285,6 +306,34 @@ class Cuentas_Presupuesto_Models {
 
         $inserted = $wpdb->query($query);
         return $inserted;
+    }
+
+    private function update_presupuesto_subcategorias($presupuesto, $subcategorias){
+        global $wpdb;
+        $table = 'cu_presupuestos_has_categorias_has_subcategorias';
+
+        if(empty($subcategorias))
+            return false;
+        
+        for($i=0; $i < sizeof($subcategorias); $i++){
+			$sub = $subcategorias[$i];
+			$sub_id = $sub['subcategoria_id'];
+			$sub_cat = $sub['categoria_id'];
+
+			$data = array(
+				"meta" => $sub['meta'],
+				"gasto" => $sub['gasto'],
+				"diferencia" => $sub['diferencia']
+			);
+			$where = array(
+				"presupuesto_id" => $presupuesto,
+				"categoria_id" => $sub_cat,
+				"subcategoria_id" => $sub_id
+			);
+			$wpdb->update($table, $data, $where);
+        }
+
+        return null;
     }
 
 	public function create($usuario_id, $empresa_id, $presupuesto, $categorias, $subcategorias){
@@ -314,28 +363,31 @@ class Cuentas_Presupuesto_Models {
 		}
 	}
 
-	public function update($usuario_id, $empresa_id, $presupuesto_id, $data){
+	public function update($usuario_id, $empresa_id, $presupuesto, $categorias, $subcategorias){
 		global $wpdb;
 		
-		if($this->usuario_has_empresa($usuario_id, $empresa_id)){
-			$update = $wpdb->update('cu_presupuestos', $data, array("id" => $presupuesto_id));
-			if($update == 0 || !$update){
-				return array("success" => false, "error" => "No se pudo actualizar");
-			}
-			else{
-				$data = $this->get_presupuesto_data($presupuesto_id);
-				return array("success" => true, "data" => $data);
-			}
-		}
-		else{
-			return array("success" => false, "error" => "No estás autorizado");
-		}
+		if($usuario_id == null || !is_numeric($usuario_id) || !$this->usuario_has_empresa($usuario_id, $empresa_id)){
+			return array(
+				"success" => false, 
+				"error" => "No estás autorizado"
+			);
+        }
+		
+		$wpdb->update('cu_presupuestos', $presupuesto);
+
+		$this->update_presupuesto_categorias($presupuesto_id, $categorias);
+        $this->update_presupuesto_subcategorias($presupuesto_id, $subcategorias);
+
+		$data = $this->get_presupuesto_data($presupuesto_id);
+		return array("success" => true, "data" => $data);
 	}
 
 	public function delete($usuario_id, $empresa_id, $presupuesto_id){
 		global $wpdb;
 
 		if($this->usuario_has_empresa($usuario_id, $empresa_id) && $this->empresa_has_presupuesto($empresa_id, $presupuesto_id)){
+			$deleted = $wpdb->delete("cu_presupuestos_has_categorias_has_subcategorias", array("presupuesto_id" => $presupuesto_id));
+			$deleted = $wpdb->delete("cu_presupuestos_has_categorias", array("presupuesto_id" => $presupuesto_id));
 			$deleted = $wpdb->delete("cu_presupuestos", array("id" => $presupuesto_id));
 			if($deleted > 0)
 				return array("success" => true);
