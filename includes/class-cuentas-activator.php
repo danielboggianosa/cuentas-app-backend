@@ -245,6 +245,7 @@ class Cuentas_Activator {
 		  `inicio` DATE NULL DEFAULT NULL,
 		  `fin` DATE NULL DEFAULT NULL,
 		  `ingreso` TINYINT NULL DEFAULT '0',
+		  `moneda` VARCHAR(10) NOT NULL DEFAULT 'PEN',
 		  `empresa_id` INT NOT NULL,
 		  `cuenta_id` INT NULL DEFAULT NULL,
 		  PRIMARY KEY (`id`),
