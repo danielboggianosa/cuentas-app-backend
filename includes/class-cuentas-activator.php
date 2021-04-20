@@ -143,7 +143,7 @@ class Cuentas_Activator {
 		  `imagen_url` TEXT NULL DEFAULT NULL,
 		  `cuenta_id` INT NOT NULL,
 		  `categoria_id` INT NOT NULL,
-		  `subcategoria_id` INT NOT NULL,
+		  `subcategoria_id` INT NULL,
 		  PRIMARY KEY (`id`),
 		  INDEX `fk_cu_registros_cu_cuentas1_idx` (`cuenta_id` ASC) ,
 		  INDEX `fk_cu_registros_cu_categorias1_idx` (`categoria_id` ASC) ,
