@@ -167,7 +167,7 @@ class Cuentas_Cuenta_Models {
 			}
 			else{
 				$data = $this->get_cuenta_data($cuenta_id);
-				return array("success" => true, "data" => array($data));
+				return array("success" => true, "data" => $data);
 			}
 		}
 		else{
