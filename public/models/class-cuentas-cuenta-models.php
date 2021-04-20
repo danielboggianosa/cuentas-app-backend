@@ -189,5 +189,14 @@ class Cuentas_Cuenta_Models {
 			return array("success" => false, "error" => "No estás autorizado");
 		}
 	}
+	
+	public function update_saldo($cuenta){
+		global $wpdb;
+		$query = "SELECT SUM(monto) as saldo FROM cu_registros WHERE cuenta_id = $cuenta";
+		$results = $wpdb->get_results($query, OBJECT);
+		$saldo = $results[0]->saldo;
+		echo $wpdb->update('cu_cuentas', array('saldo' => $saldo), array('id' => $cuenta));
+		return null;
+	}
 
 }
