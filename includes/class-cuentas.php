@@ -146,6 +146,12 @@ class Cuentas {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/routes/class-cuentas-categoria-routes.php';
 
+		/**
+		 * The class responsible for defining all actions that occur in the public-facing
+		 * side of the site.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/routes/class-cuentas-subcategoria-routes.php';
+
 		$this->loader = new Cuentas_Loader();
 
 	}
@@ -203,11 +209,13 @@ class Cuentas {
 		$cuentas_empresa = new Cuentas_Empresa_Routes( $this->get_plugin_name(), $this->get_version() );
 		$cuentas_cuenta = new Cuentas_Cuenta_Routes( $this->get_plugin_name(), $this->get_version() );
 		$cuentas_categoria = new Cuentas_Categoria_Routes( $this->get_plugin_name(), $this->get_version() );
+		$cuentas_subcategoria = new Cuentas_Subcategoria_Routes( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'rest_api_init', $cuentas_auth, 'add_endpoints' );
 		$this->loader->add_action( 'rest_api_init', $cuentas_empresa, 'add_endpoints' );
 		$this->loader->add_action( 'rest_api_init', $cuentas_cuenta, 'add_endpoints' );
 		$this->loader->add_action( 'rest_api_init', $cuentas_categoria, 'add_endpoints' );
+		$this->loader->add_action( 'rest_api_init', $cuentas_subcategoria, 'add_endpoints' );
 
 	}
 
