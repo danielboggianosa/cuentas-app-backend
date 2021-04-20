@@ -81,6 +81,7 @@ class Cuentas_Activator {
 		  `moneda` VARCHAR(20) NULL DEFAULT NULL,
 		  `codigo` VARCHAR(150) NULL DEFAULT NULL,
 		  `cci` VARCHAR(150) NULL DEFAULT NULL,
+		  `saldo` DECIMAL(10,2) NULL DEFAULT '0',
 		  `notas` TEXT NULL DEFAULT NULL,
 		  `imagen_url` TEXT NULL DEFAULT NULL,
 		  `empresa_id` INT NOT NULL,
@@ -100,12 +101,12 @@ class Cuentas_Activator {
 		$sql = "CREATE TABLE IF NOT EXISTS `cu_categorias` (
 		  `id` INT NOT NULL AUTO_INCREMENT,
 		  `nombre` VARCHAR(200) NOT NULL,
-		  `cuenta_id` INT NOT NULL,
+		  `empresa_id` INT NOT NULL,
 		  PRIMARY KEY (`id`),
-		  INDEX `fk_cu_categorias_cu_cuentas1_idx` (`cuenta_id` ASC) ,
-		  CONSTRAINT `fk_cu_categorias_cu_cuentas1`
-			FOREIGN KEY (`cuenta_id`)
-			REFERENCES `cu_cuentas` (`id`)
+		  INDEX `fk_cu_categorias_cu_empresas1_idx` (`empresa_id` ASC) ,
+		  CONSTRAINT `fk_cu_categorias_cu_empresas1`
+			FOREIGN KEY (`empresa_id`)
+			REFERENCES `cu_empresas` (`id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION)
 		ENGINE = InnoDB;";
