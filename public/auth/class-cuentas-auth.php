@@ -71,12 +71,13 @@ class Cuentas_Auth {
 		$user = wp_signon( $creds, true );
 
 		if ( is_wp_error($user) )
-		echo $user->get_error_message();
+			return array("success" => false, "message" => "No autorizado");
+		// echo $user->get_error_message();
 
 		$id = $user->ID;
 		$meta = get_user_meta($id);
 
-		return $meta;
+		return array("success" => true, "data" => $meta);
 	}
 
     // LOGOUT
