@@ -82,30 +82,30 @@ class Cuentas_Presupuesto_Controllers {
 
     }
 
-    public function list_all($data){		
+    public function list_all($request){		
 		return $this->_presupuesto_models->list_all(
-			$this->_helpers->get_user_id(),
-			$data['empresa_id'],
-            $data['busqueda_campo'],
-            $data['busqueda_valor'],
-            $data['orden_campo'],
-            $data['orden_valor'],
-            $data['filas'],
-            $data['pagina']
+			$this->_helpers->get_user_id($request->get_header('token')),
+			$request['empresa_id'],
+            $request['busqueda_campo'],
+            $request['busqueda_valor'],
+            $request['orden_campo'],
+            $request['orden_valor'],
+            $request['filas'],
+            $request['pagina']
         );
 		
 	}
 	
-	public function list_one($data){		
+	public function list_one($request){		
 		return $this->_presupuesto_models->list_one(
-            $this->_helpers->get_user_id(),
-			$data['empresa_id'],
-            $data['presupuesto_id'],
+            $this->_helpers->get_user_id($request->get_header('token')),
+			$request['empresa_id'],
+            $request['presupuesto_id'],
         );
 	}
 
 	public function create($request){
-		$usuario = $this->_helpers->get_user_id();
+		$usuario = $this->_helpers->get_user_id($request->get_header('token'));
 		$body = $request->get_json_params();
         $presupuesto = $body['presupuesto'];
 		$empresa = $presupuesto['empresa_id'];		
@@ -115,7 +115,7 @@ class Cuentas_Presupuesto_Controllers {
 	}
 
 	public function update($request){
-		$usuario_id = $this->_helpers->get_user_id();
+		$usuario_id = $this->_helpers->get_user_id($request->get_header('token'));
 		$presupuesto_id = $request['presupuesto_id'];
 		$empresa_id = $request['empresa_id'];
 		$data = $request->get_json_params();
@@ -125,7 +125,7 @@ class Cuentas_Presupuesto_Controllers {
 	public function delete($request){
 		$presupuesto_id = $request['presupuesto_id'];
 		$empresa_id = $request['empresa_id'];
-		$usuario_id = $this->_helpers->get_user_id();
+		$usuario_id = $this->_helpers->get_user_id($request->get_header('token'));
 
 		return $this->_presupuesto_models->delete($usuario_id, $empresa_id, $presupuesto_id);
 	}

@@ -133,6 +133,7 @@ class Cuentas_Registro_Models {
         return array(
             "success" => true,
             "data" => $data,
+			// "query" => $sql,
             "pagina" => array(
                 "total_filas" => $filas_total,
                 "total_paginas" => $paginas_total

@@ -103,7 +103,7 @@ class Cuentas_Registro_Routes {
 			register_rest_route( $namespace, $e['endpoint'], array(
 				'methods' => $e['method'],
 				'callback' => array($_registro_controllers, $e['callback']),
-				'permission_callback' => array($_auth, 'valid_cookie')
+				'permission_callback' => array($_auth, 'validate_token')
 			) );
 		}
 	}

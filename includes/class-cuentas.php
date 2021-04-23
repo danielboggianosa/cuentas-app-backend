@@ -100,6 +100,11 @@ class Cuentas {
 	private function load_dependencies() {
 
 		/**
+         * Load dependecies managed by composer.
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/vendor/autoload.php';
+		
+		/**
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */

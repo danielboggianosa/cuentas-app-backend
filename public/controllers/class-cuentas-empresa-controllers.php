@@ -82,28 +82,28 @@ class Cuentas_Empresa_Controllers {
 
     }
 
-    public function list_all($data){		
+    public function list_all($request){		
 		return $this->_empresa_models->list_all(
-			$this->_helpers->get_user_id(),
-            $data['busqueda_campo'],
-            $data['busqueda_valor'],
-            $data['orden_campo'],
-            $data['orden_valor'],
-            $data['filas'],
-            $data['pagina']
+			$this->_helpers->get_user_id($request->get_header('token')),
+            $request['busqueda_campo'],
+            $request['busqueda_valor'],
+            $request['orden_campo'],
+            $request['orden_valor'],
+            $request['filas'],
+            $request['pagina']
         );
 		
 	}
 	
-	public function list_one($data){		
+	public function list_one($request){		
 		return $this->_empresa_models->list_one(
-            $this->_helpers->get_user_id(),
-            $data['id'],
+            $this->_helpers->get_user_id($request->get_header('token')),
+            $request['id'],
         );
 	}
 
 	public function create($request){
-		$usuario = $this->_helpers->get_user_id();
+		$usuario = $this->_helpers->get_user_id($request->get_header('token'));
 		$data = array(
 			"nombre" => $request['nombre'],
 			"notas" => $request['notas'],
@@ -113,7 +113,7 @@ class Cuentas_Empresa_Controllers {
 	}
 
 	public function update($request){
-		$usuario_id = $this->_helpers->get_user_id();
+		$usuario_id = $this->_helpers->get_user_id($request->get_header('token'));
 		$empresa_id = $request['id'];
 		$data = array(
 			"nombre" => $request['nombre'],
@@ -125,7 +125,7 @@ class Cuentas_Empresa_Controllers {
 
 	public function add_user($request){
 		$empresa_id = $request['empresa_id'];
-		$usuario_id = $this->_helpers->get_user_id();
+		$usuario_id = $this->_helpers->get_user_id($request->get_header('token'));
 		$invitado = get_user_by( 'email', $request['usuario_email'] );
 		$invitado_id = $invitado->data->ID;
 		$data = array(
@@ -135,9 +135,9 @@ class Cuentas_Empresa_Controllers {
 		return $this->_empresa_models->add_user($usuario_id, $empresa_id, $data);		
 	}
 
-	public function delete($data){
-		$empresa_id = $data['id'];
-		$usuario_id = $this->_helpers->get_user_id();
+	public function delete($request){
+		$empresa_id = $request['id'];
+		$usuario_id = $this->_helpers->get_user_id($request->get_header('token'));
 
 		return $this->_empresa_models->delete($usuario_id, $empresa_id);
 	}

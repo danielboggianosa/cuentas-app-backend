@@ -1,5 +1,7 @@
 <?php
 
+use \Firebase\JWT\JWT;
+
 /**
  * The public-facing functionality of the plugin.
  *
@@ -54,8 +56,22 @@ class Cuentas_Auth {
 
 	}
 
+	private function generate_jwt_token($user){
+		$key = JWT_AUTH_SECRET_KEY;
+		$payload = array(
+			"iss" => get_site_url(),
+			"iat" => 1356999524,
+			"ext" => time() + 100000,
+			"sub" => $user->ID,
+			"user" => $user->nickname
+		);
+
+		return JWT::encode($payload, $key);
+	}
+
 	// LOGIN
 	public function login($request){
+
 		// Decoding
 		$auth_head = explode("Basic ", $request->get_header('authorization'));
 		$auth_decoded = base64_decode($auth_head[1]);
@@ -77,7 +93,9 @@ class Cuentas_Auth {
 		$id = $user->ID;
 		$meta = get_user_meta($id);
 
-		return array("success" => true, "data" => $meta);
+		$jwt = $this->generate_jwt_token($user);
+
+		return array("success" => true, "data" => $meta, "token" => $jwt);
 	}
 
     // LOGOUT
@@ -88,6 +106,18 @@ class Cuentas_Auth {
 	// COOKIE VALIDATION
 	public function valid_cookie(){
 		return wp_validate_auth_cookie( $_COOKIE[ LOGGED_IN_COOKIE ], 'logged_in' );
+	}
+
+	// VALIDATE TOKEN
+	public function validate_token($request){
+		if($request->get_header('token') == '')
+			return false;
+
+		$key = JWT_AUTH_SECRET_KEY;
+		$token = $request->get_header('token');
+		$decoded = JWT::decode($token, $key, array('HS256'));
+
+		return ( $decoded->ext > time() ) ? true : false;
 	}
 
 	public function add_endpoints() {

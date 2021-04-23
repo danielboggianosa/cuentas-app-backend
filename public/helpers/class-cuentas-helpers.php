@@ -1,5 +1,7 @@
 <?php
 
+use \Firebase\JWT\JWT;
+
 /**
  * The public-facing functionality of the plugin.
  *
@@ -56,7 +58,10 @@ class Cuentas_Helpers {
 
 	// HELPERS
 
-	public function get_user_id(){
-		return wp_validate_auth_cookie( $_COOKIE[ LOGGED_IN_COOKIE ], 'logged_in' );
+	public function get_user_id($token){
+		// return wp_validate_auth_cookie( $_COOKIE[ LOGGED_IN_COOKIE ], 'logged_in' );
+		$key = JWT_AUTH_SECRET_KEY;		
+		$decoded = JWT::decode($token, $key, array('HS256'));
+		return $decoded->sub;
 	}
 }

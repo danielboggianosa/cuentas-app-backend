@@ -82,37 +82,37 @@ class Cuentas_Subcategoria_Controllers {
 
     }
 
-    public function list_all($data){		
+    public function list_all($request){		
 		return $this->_subcategoria_models->list_all(
-			$this->_helpers->get_user_id(),
-			$data['categoria_id'],
-            $data['busqueda_campo'],
-            $data['busqueda_valor'],
-            $data['orden_campo'],
-            $data['orden_valor'],
-            $data['filas'],
-            $data['pagina']
+			$this->_helpers->get_user_id($request->get_header('token')),
+			$request['categoria_id'],
+            $request['busqueda_campo'],
+            $request['busqueda_valor'],
+            $request['orden_campo'],
+            $request['orden_valor'],
+            $request['filas'],
+            $request['pagina']
         );
 		
 	}
 	
-	public function list_one($data){		
+	public function list_one($request){		
 		return $this->_subcategoria_models->list_one(
-            $this->_helpers->get_user_id(),
-			$data['categoria_id'],
-            $data['subcategoria_id'],
+            $this->_helpers->get_user_id($request->get_header('token')),
+			$request['categoria_id'],
+            $request['subcategoria_id'],
         );
 	}
 
 	public function create($request){
-		$usuario = $this->_helpers->get_user_id();
+		$usuario = $this->_helpers->get_user_id($request->get_header('token'));
 		$categoria = $request['categoria_id'];
 		$data = $request->get_json_params();
 		return $this->_subcategoria_models->create($usuario, $categoria, $data);
 	}
 
 	public function update($request){
-		$usuario_id = $this->_helpers->get_user_id();
+		$usuario_id = $this->_helpers->get_user_id($request->get_header('token'));
 		$subcategoria_id = $request['subcategoria_id'];
 		$categoria_id = $request['categoria_id'];
 		$data = $request->get_json_params();
@@ -122,7 +122,7 @@ class Cuentas_Subcategoria_Controllers {
 	public function delete($request){
 		$subcategoria_id = $request['subcategoria_id'];
 		$categoria_id = $request['categoria_id'];
-		$usuario_id = $this->_helpers->get_user_id();
+		$usuario_id = $this->_helpers->get_user_id($request->get_header('token'));
 
 		return $this->_subcategoria_models->delete($usuario_id, $categoria_id, $subcategoria_id);
 	}

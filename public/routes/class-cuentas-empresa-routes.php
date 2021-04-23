@@ -109,7 +109,7 @@ class Cuentas_Empresa_Routes {
 			register_rest_route( 'cuentas/v1', $e['endpoint'], array(
 				'methods' => $e['method'],
 				'callback' => array($_empresa_controllers, $e['callback']),
-				'permission_callback' => array($_auth, 'valid_cookie')
+				'permission_callback' => array($_auth, 'validate_token')
 			) );
 		}
 	}
