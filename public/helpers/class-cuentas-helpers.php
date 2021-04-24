@@ -59,9 +59,11 @@ class Cuentas_Helpers {
 	// HELPERS
 
 	public function get_user_id($token){
-		// return wp_validate_auth_cookie( $_COOKIE[ LOGGED_IN_COOKIE ], 'logged_in' );
-		$key = JWT_AUTH_SECRET_KEY;		
-		$decoded = JWT::decode($token, $key, array('HS256'));
-		return $decoded->sub;
+		if($token){
+			$key = JWT_AUTH_SECRET_KEY;		
+			$decoded = JWT::decode($token, $key, array('HS256'));
+			return $decoded->sub;
+		}
+		return wp_validate_auth_cookie( $_COOKIE[ LOGGED_IN_COOKIE ], 'logged_in' );
 	}
 }

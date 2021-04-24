@@ -195,6 +195,10 @@ class Cuentas_Empresa_Models {
 		if($this->usuario_has_empresa($usuario_id, $empresa_id)){
 			$wpdb->delete('cu_users_has_empresas', array("user_id" => $usuario_id, "empresa_id" => $empresa_id));
 			$wpdb->delete("cu_empresas", array("id" => $empresa_id));
+			if($wpdb->last_error){
+				$wpdb->insert('cu_users_has_empresas', array("user_id" => $usuario_id, "empresa_id" => $empresa_id));
+				return array("success"=>false, "message" => "No se pudo borrar");
+			}
 			return array("success" => true);
 		}
 		else{

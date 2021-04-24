@@ -111,24 +111,28 @@ class Cuentas_Auth {
 	// VALIDATE TOKEN
 	public function validate_token($request){
 		if($request->get_header('token') == '')
-			return false;
+			return $this->valid_cookie();
+		else{
+			$key = JWT_AUTH_SECRET_KEY;
+			$token = $request->get_header('token');
+			$decoded = JWT::decode($token, $key, array('HS256'));
+	
+			return ( $decoded->ext > time() ) ? true : false;
+		}
 
-		$key = JWT_AUTH_SECRET_KEY;
-		$token = $request->get_header('token');
-		$decoded = JWT::decode($token, $key, array('HS256'));
-
-		return ( $decoded->ext > time() ) ? true : false;
 	}
 
 	public function add_endpoints() {
 		register_rest_route( 'cuentas/v1', '/login', array(
 			'methods' => 'GET',
-			'callback' => array($this, 'login')
+			'callback' => array($this, 'login'),
+			'permission_callback' => array()
 			)
 		);
 		register_rest_route( 'cuentas/v1', '/logout', array(
 			'methods' => 'GET',
-			'callback' => array($this, 'logout')
+			'callback' => array($this, 'logout'),
+			'permission_callback' => array()
 			)
 		);
 	}
