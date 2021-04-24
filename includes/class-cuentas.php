@@ -203,6 +203,11 @@ class Cuentas {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'remove_menus' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_menu_page' );
+		$this->loader->add_action( 'admin_head', $plugin_admin, 'remove_menus', 1 );
+		$this->loader->add_action( 'admin_bar_menu', $plugin_admin, 'remove_wp_logo', 999);
+		$this->loader->add_action( 'admin_bar_menu', $plugin_admin, 'add_subpage', 999);
 
 	}
 
