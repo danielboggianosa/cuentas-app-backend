@@ -110,14 +110,22 @@ class Cuentas_Auth {
 
 	// VALIDATE TOKEN
 	public function validate_token($request){
+		header("Access-Control-Allow-Headers: Authorization, token");
+		header("Access-Control-Allow-Origin: *");
 		if($request->get_header('token') == '')
 			return $this->valid_cookie();
 		else{
 			$key = JWT_AUTH_SECRET_KEY;
+			// $bearer = $request->get_header('Authorization');
+			// echo $bearer;
+			// $token = explode("Bearer ", $bearer);
 			$token = $request->get_header('token');
-			$decoded = JWT::decode($token, $key, array('HS256'));
+			if($token != ''){
+				$decoded = JWT::decode($token, $key, array('HS256'));
+				return ( $decoded->ext > time() ) ? true : false;
+			}
+			else return false;
 	
-			return ( $decoded->ext > time() ) ? true : false;
 		}
 
 	}
