@@ -65,17 +65,18 @@ class Cuentas_Empresa_Models {
             return array("success" => false, "error" => "No estás autorizado");
         }
 
-        $sql = "SELECT id FROM cu_empresas AS e INNER JOIN cu_users_has_empresas AS u ON e.id = u.empresa_id WHERE u.user_id = $usuario $busqueda";
+        $sql = "SELECT id FROM cu_empresas AS e INNER JOIN cu_users_has_empresas AS u ON e.id = u.empresa_id WHERE e.deletedAt IS NULL AND u.user_id = $usuario $busqueda";
         $wpdb->get_results($sql, OBJECT);
         $filas_total = $wpdb->num_rows;
         $paginas_total = ceil($filas_total / $filas);
         $offset = "OFFSET ".($pagina * $filas - $filas);
 
-        $sql = "SELECT id, nombre, notas, image_url FROM cu_empresas AS e INNER JOIN cu_users_has_empresas AS u ON e.id = u.empresa_id WHERE u.user_id = $usuario $busqueda $orden $limit $offset;";
+        $sql = "SELECT id, nombre, notas, imagen FROM cu_empresas AS e INNER JOIN cu_users_has_empresas AS u ON e.id = u.empresa_id WHERE e.deletedAt IS NULL AND u.user_id = $usuario $busqueda $orden $limit $offset;";
         $data = $wpdb->get_results($sql, OBJECT);
         return array(
             "success" => true,
             "data" => $data,
+			"sql" => $sql,
             "pagina" => array(
                 "total_filas" => $filas_total,
                 "total_paginas" => $paginas_total
@@ -94,10 +95,11 @@ class Cuentas_Empresa_Models {
 			);
         }
 
-        $sql = "SELECT id, nombre, notas, image_url FROM cu_empresas AS e 
+        $sql = "SELECT id, nombre, notas, imagen FROM cu_empresas AS e 
 		INNER JOIN cu_users_has_empresas AS u 
 		ON e.id = u.empresa_id 
 		WHERE u.user_id = $usuario 
+		AND e.deletedAt IS NULL
 		AND e.id = $empresa;";
         $data = $wpdb->get_results($sql, OBJECT);
         return array(
@@ -120,7 +122,7 @@ class Cuentas_Empresa_Models {
 	public function get_empresa_data($empresa_id, $usuario_id){
 		global $wpdb;
 
-		$query = "SELECT e.id, e.nombre, e.notas, e.image_url FROM cu_empresas AS e INNER JOIN cu_users_has_empresas AS u ON e.id = u.empresa_id WHERE e.id = $empresa_id LIMIT 1";
+		$query = "SELECT e.id, e.nombre, e.notas, e.imagen FROM cu_empresas AS e INNER JOIN cu_users_has_empresas AS u ON e.id = u.empresa_id WHERE e.id = $empresa_id LIMIT 1";
 		
 		$results = $wpdb->get_results($query, OBJECT);
 		return $results[0];
@@ -193,8 +195,7 @@ class Cuentas_Empresa_Models {
 		global $wpdb;
 
 		if($this->usuario_has_empresa($usuario_id, $empresa_id)){
-			$wpdb->delete('cu_users_has_empresas', array("user_id" => $usuario_id, "empresa_id" => $empresa_id));
-			$wpdb->delete("cu_empresas", array("id" => $empresa_id));
+			$deleted = $wpdb->update("cu_empresas", array("deletedAt" => current_time('timestamp')), array("id" => $empresa_id));
 			if($wpdb->last_error){
 				$wpdb->insert('cu_users_has_empresas', array("user_id" => $usuario_id, "empresa_id" => $empresa_id));
 				return array("success"=>false, "message" => "No se pudo borrar");

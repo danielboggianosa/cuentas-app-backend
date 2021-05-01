@@ -107,7 +107,7 @@ class Cuentas_Empresa_Controllers {
 		$data = array(
 			"nombre" => $request['nombre'],
 			"notas" => $request['notas'],
-			"image_url" => $request['imagen']
+			"imagen" => $request['imagen']
 		);
 		return $this->_empresa_models->create($usuario, $data);
 	}
@@ -118,7 +118,7 @@ class Cuentas_Empresa_Controllers {
 		$data = array(
 			"nombre" => $request['nombre'],
 			"notas" => $request['notas'],
-			"image_url" => $request['imagen'],
+			"imagen" => $request['imagen'],
 		);
 		return $this->_empresa_models->update($usuario_id, $empresa_id, $data);
 	}

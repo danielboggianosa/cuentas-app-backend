@@ -97,7 +97,7 @@ class Cuentas_Registro_Models {
 	public function get_registro_data($registro_id){
 		global $wpdb;
 
-		$query = "SELECT r.id, r.fecha, r.ingreso, r.descripcion, r.entidad, r.operacion, r.monto, r.imagen_url, r.cuenta_id, r.categoria_id, c.nombre as categoria, r.subcategoria_id, s.nombre as subcategoria
+		$query = "SELECT r.id, r.fecha, r.ingreso, r.descripcion, r.entidad, r.operacion, r.monto, r.imagen, r.cuenta_id, r.categoria_id, c.nombre as categoria, r.subcategoria_id, s.nombre as subcategoria
         FROM cu_registros AS r
         INNER JOIN cu_categorias AS c ON r.categoria_id = c.id
         LEFT JOIN cu_subcategorias AS s ON r.subcategoria_id = s.id
@@ -117,18 +117,18 @@ class Cuentas_Registro_Models {
             return array("success" => false, "error" => "No estás autorizado");
         }
 
-        $sql = "SELECT id FROM cu_registros AS c WHERE c.cuenta_id = $cuenta $busqueda";
+        $sql = "SELECT id FROM cu_registros AS c WHERE c.cuenta_id = $cuenta AND c.deletedAt IS NULL $busqueda";
         $wpdb->get_results($sql, OBJECT);
 
         $filas_total = $wpdb->num_rows;
         $paginas_total = ceil($filas_total / $filas);
         $offset = "OFFSET ".($pagina * $filas - $filas);
 
-        $sql = "SELECT r.id, r.fecha, r.ingreso, r.descripcion, r.entidad, r.operacion, r.monto, r.imagen_url, r.cuenta_id, r.categoria_id, c.nombre as categoria, r.subcategoria_id, s.nombre as subcategoria 
+        $sql = "SELECT r.id, r.fecha, r.ingreso, r.descripcion, r.entidad, r.operacion, r.monto, r.imagen, r.cuenta_id, r.categoria_id, c.nombre as categoria, r.subcategoria_id, s.nombre as subcategoria 
         FROM cu_registros AS r
         INNER JOIN cu_categorias AS c ON r.categoria_id = c.id
         LEFT JOIN cu_subcategorias AS s ON r.subcategoria_id = s.id
-        WHERE r.cuenta_id = $cuenta $busqueda $orden $limit $offset;";
+        WHERE r.cuenta_id = $cuenta AND r.deletedAt IS NULL $busqueda $orden $limit $offset;";
         $data = $wpdb->get_results($sql, OBJECT);
         return array(
             "success" => true,
@@ -152,11 +152,12 @@ class Cuentas_Registro_Models {
 			);
         }
 
-        $sql = "SELECT r.id, r.fecha, r.ingreso, r.descripcion, r.entidad, r.operacion, r.monto, r.imagen_url, r.cuenta_id, r.categoria_id, c.nombre as categoria, r.subcategoria_id, s.nombre as subcategoria
+        $sql = "SELECT r.id, r.fecha, r.ingreso, r.descripcion, r.entidad, r.operacion, r.monto, r.imagen, r.cuenta_id, r.categoria_id, c.nombre as categoria, r.subcategoria_id, s.nombre as subcategoria
         FROM cu_registros AS r
         INNER JOIN cu_categorias AS c ON r.categoria_id = c.id
         LEFT JOIN cu_subcategorias AS s ON r.subcategoria_id = s.id
 		WHERE r.cuenta_id = $cuenta
+		AND r.deletedAt IS NULL
 		AND r.id = $registro;";
         $data = $wpdb->get_results($sql, OBJECT);
 
@@ -214,7 +215,7 @@ class Cuentas_Registro_Models {
 		global $wpdb;
 
 		if($this->usuario_has_empresa($usuario_id, $cuenta_id) && $this->cuenta_has_registro($cuenta_id, $registro_id)){
-			$deleted = $wpdb->delete("cu_registros", array("id" => $registro_id));
+			$deleted = $wpdb->update("cu_registros",array("deletedAt" => current_time('timestamp')), array("id" => $registro_id));
 			if($deleted > 0)
 				return array("success" => true);
 			else

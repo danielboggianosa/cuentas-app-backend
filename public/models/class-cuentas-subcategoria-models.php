@@ -98,14 +98,14 @@ class Cuentas_Subcategoria_Models {
             return array("success" => false, "error" => "No estás autorizado");
         }
 
-        $sql = "SELECT id FROM cu_subcategorias AS c WHERE c.categoria_id = $categoria $busqueda";
+        $sql = "SELECT id FROM cu_subcategorias AS c WHERE c.categoria_id = $categoria AND c.deletedAt IS NULL $busqueda";
         $wpdb->get_results($sql, OBJECT);
 
         $filas_total = $wpdb->num_rows;
         $paginas_total = ceil($filas_total / $filas);
         $offset = "OFFSET ".($pagina * $filas - $filas);
 
-        $sql = "SELECT id, nombre FROM cu_subcategorias AS c WHERE c.categoria_id = $categoria $busqueda $orden $limit $offset;";
+        $sql = "SELECT id, nombre FROM cu_subcategorias AS c WHERE c.categoria_id = $categoria AND c.deletedAt IS NULL $busqueda $orden $limit $offset;";
         $data = $wpdb->get_results($sql, OBJECT);
         return array(
             "success" => true,
@@ -130,6 +130,7 @@ class Cuentas_Subcategoria_Models {
 
         $sql = "SELECT id, nombre FROM cu_subcategorias AS c
 		WHERE c.categoria_id = $categoria
+		AND c.deletedAt IS NULL
 		AND c.id = $subcategoria;";
         $data = $wpdb->get_results($sql, OBJECT);
 
@@ -184,7 +185,7 @@ class Cuentas_Subcategoria_Models {
 		global $wpdb;
 
 		if($this->usuario_has_empresa($usuario_id, $categoria_id) && $this->categoria_has_subcategoria($categoria_id, $subcategoria_id)){
-			$deleted = $wpdb->delete("cu_subcategorias", array("id" => $subcategoria_id));
+			$deleted = $wpdb->delete("cu_subcategorias", array("deletedAt" => current_time('timestamp')), array("id" => $subcategoria_id));
 			if($deleted > 0)
 				return array("success" => true);
 			else

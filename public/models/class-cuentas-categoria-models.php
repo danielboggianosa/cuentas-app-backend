@@ -93,14 +93,14 @@ class Cuentas_Categoria_Models {
             return array("success" => false, "error" => "No estás autorizado");
         }
 
-        $sql = "SELECT id FROM cu_categorias AS c WHERE c.empresa_id = $empresa $busqueda";
+        $sql = "SELECT id FROM cu_categorias AS c WHERE c.deletedAt IS NULL AND c.empresa_id = $empresa $busqueda";
         $wpdb->get_results($sql, OBJECT);
 
         $filas_total = $wpdb->num_rows;
         $paginas_total = ceil($filas_total / $filas);
         $offset = "OFFSET ".($pagina * $filas - $filas);
 
-        $sql = "SELECT id, nombre FROM cu_categorias AS c WHERE c.empresa_id = $empresa $busqueda $orden $limit $offset;";
+        $sql = "SELECT id, nombre, imagen FROM cu_categorias AS c WHERE c.deletedAt IS NULL AND c.empresa_id = $empresa $busqueda $orden $limit $offset;";
         $data = $wpdb->get_results($sql, OBJECT);
         return array(
             "success" => true,
@@ -124,7 +124,8 @@ class Cuentas_Categoria_Models {
         }
 
         $sql = "SELECT id, nombre FROM cu_categorias AS c
-		WHERE c.empresa_id = $empresa
+		WHERE c..deletedAt IS NULL
+		AND c.empresa_id = $empresa
 		AND c.id = $categoria;";
         $data = $wpdb->get_results($sql, OBJECT);
 
@@ -179,7 +180,7 @@ class Cuentas_Categoria_Models {
 		global $wpdb;
 
 		if($this->usuario_has_empresa($usuario_id, $empresa_id) && $this->empresa_has_categoria($empresa_id, $categoria_id)){
-			$deleted = $wpdb->delete("cu_categorias", array("id" => $categoria_id));
+			$deleted = $wpdb->update("cu_categorias", array("deletedAt" => current_time('timestamp')), array("id" => $categoria_id));
 			if($deleted > 0)
 				return array("success" => true);
 			else

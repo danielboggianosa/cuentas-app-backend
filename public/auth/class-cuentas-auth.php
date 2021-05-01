@@ -83,7 +83,7 @@ class Cuentas_Auth {
 		$creds = array();
 		$creds['user_login'] = $username;
 		$creds['user_password'] =  $password;
-		$creds['remember'] = true;
+		$creds['remember'] = false;
 		$user = wp_signon( $creds, true );
 
 		if ( is_wp_error($user) )

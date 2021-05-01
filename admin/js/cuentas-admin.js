@@ -50,7 +50,7 @@ const fillDataTable = ({data, pageId, columns, tableId}) => {
 		const select = jQuery(pageId).find("#selectCampos")
 		select.html('')
 		columns.map( c => {
-			if (c.visible && c.key != 'actions' && c.key != 'image_url' && c.key != 'imagen_url')
+			if (c.visible && c.key != 'actions' && c.key != 'imagen')
 				select.append(`<option value="${c.key}">${c.title}</option>`)
 		})
 		
@@ -68,7 +68,7 @@ const fillDataTable = ({data, pageId, columns, tableId}) => {
 			jQuery(pageId).find(tableId).append(`<tr>`)
 			columns.map( c => {
 				if(c.visible){
-					if(c.key == 'image_url' || c.key == 'imagen_url'){
+					if(c.key == 'imagen'){
 						jQuery(pageId).find(tableId).append(`<td><img class="img-thumbnail" src="${'http://picsum.photos/50/50'}"/></td>`)
 					}
 					else if(c.key == 'actions'){

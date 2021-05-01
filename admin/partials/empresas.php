@@ -77,7 +77,7 @@
             actions: true,
             columns: [
                 {key: 'id', title: 'ID', visible: true},
-                {key: 'image_url', title: 'IMAGEN', visible: true},
+                {key: 'imagen', title: 'IMAGEN', visible: true},
                 {key: 'nombre', title: 'NOMBRE', visible: true},
                 {key: 'notas', title: 'NOTAS', visible: true},
                 {key: 'actions', title: 'ACCIONES', visible: true},

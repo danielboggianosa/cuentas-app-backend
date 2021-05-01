@@ -77,7 +77,7 @@ class Cuentas_Cuenta_Models {
 	public function get_cuenta_data($cuenta_id){
 		global $wpdb;
 
-		$query = "SELECT id, nombre, banco, moneda, codigo, cci, saldo, notas, imagen_url, empresa_id FROM cu_cuentas WHERE id = $cuenta_id LIMIT 1";
+		$query = "SELECT id, nombre, banco, moneda, codigo, cci, saldo, notas, imagen, empresa_id FROM cu_cuentas WHERE id = $cuenta_id LIMIT 1";
 		$results = $wpdb->get_results($query, OBJECT);
 
 		return $results;
@@ -93,14 +93,14 @@ class Cuentas_Cuenta_Models {
             return array("success" => false, "error" => "No estás autorizado");
         }
 
-        $sql = "SELECT id FROM cu_cuentas AS c WHERE c.empresa_id = $empresa $busqueda";
+        $sql = "SELECT id FROM cu_cuentas AS c WHERE c.empresa_id = $empresa AND c.deletedAt IS NULL $busqueda";
         $wpdb->get_results($sql, OBJECT);
 
         $filas_total = $wpdb->num_rows;
         $paginas_total = ceil($filas_total / $filas);
         $offset = "OFFSET ".($pagina * $filas - $filas);
 
-        $sql = "SELECT id, nombre, banco, moneda, codigo, cci, saldo, notas, imagen_url FROM cu_cuentas AS c WHERE c.empresa_id = $empresa $busqueda $orden $limit $offset;";
+        $sql = "SELECT id, nombre, banco, moneda, codigo, cci, saldo, notas, imagen FROM cu_cuentas AS c WHERE c.empresa_id = $empresa AND c.deletedAt IS NULL $busqueda $orden $limit $offset;";
         $data = $wpdb->get_results($sql, OBJECT);
         return array(
             "success" => true,
@@ -123,8 +123,9 @@ class Cuentas_Cuenta_Models {
 			);
         }
 
-        $sql = "SELECT id, nombre, banco, moneda, codigo, cci, saldo, notas, imagen_url FROM cu_cuentas AS c
+        $sql = "SELECT id, nombre, banco, moneda, codigo, cci, saldo, notas, imagen FROM cu_cuentas AS c
 		WHERE c.empresa_id = $empresa
+		AND c.deletedAt IS NULL
 		AND c.id = $cuenta;";
         $data = $wpdb->get_results($sql, OBJECT);
 
@@ -179,7 +180,7 @@ class Cuentas_Cuenta_Models {
 		global $wpdb;
 
 		if($this->usuario_has_empresa($usuario_id, $empresa_id) && $this->empresa_has_cuenta($empresa_id, $cuenta_id)){
-			$deleted = $wpdb->delete("cu_cuentas", array("id" => $cuenta_id));
+			$deleted = $wpdb->update("cu_cuentas", array("deletedAt" => current_time('timestamp')), array("id" => $cuenta_id));
 			if($deleted > 0)
 				return array("success" => true);
 			else
@@ -195,7 +196,7 @@ class Cuentas_Cuenta_Models {
 		$query = "SELECT SUM(monto) as saldo FROM cu_registros WHERE cuenta_id = $cuenta";
 		$results = $wpdb->get_results($query, OBJECT);
 		$saldo = $results[0]->saldo;
-		echo $wpdb->update('cu_cuentas', array('saldo' => $saldo), array('id' => $cuenta));
+		$wpdb->update('cu_cuentas', array('saldo' => $saldo), array('id' => $cuenta));
 		return null;
 	}
 

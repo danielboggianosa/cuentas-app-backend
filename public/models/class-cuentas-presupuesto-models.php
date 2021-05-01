@@ -193,7 +193,7 @@ class Cuentas_Presupuesto_Models {
             return array("success" => false, "error" => "No estás autorizado");
         }
 
-        $sql = "SELECT id FROM cu_presupuestos AS p WHERE p.empresa_id = $empresa $busqueda ";
+        $sql = "SELECT id FROM cu_presupuestos AS p WHERE p.empresa_id = $empresa AND p.deletedAt IS NULL $busqueda ";
         $wpdb->get_results($sql, OBJECT);
 
         $filas_total = $wpdb->num_rows;
@@ -203,7 +203,7 @@ class Cuentas_Presupuesto_Models {
 		$sql = "SELECT p.id, p.nombre, p.inicio, p.fin, p.ingreso, p.moneda, p.empresa_id, p.cuenta_id, cu.nombre as cuenta
 			FROM cu_presupuestos AS p
 			LEFT JOIN cu_cuentas AS cu ON cu.id = p.cuenta_id
-			WHERE p.empresa_id = $empresa $busqueda $orden $limit $offset;";
+			WHERE p.empresa_id = $empresa AND p.deletedAt IS NULL $busqueda $orden $limit $offset;";
         $data = $wpdb->get_results($sql, OBJECT);
         return array(
             "success" => true,
@@ -234,6 +234,7 @@ class Cuentas_Presupuesto_Models {
 			INNER JOIN cu_presupuestos_has_categorias_has_subcategorias AS pcs ON pcs.categoria_id = c.id
 			INNER JOIN cu_subcategorias AS s ON pcs.subcategoria_id = s.id
 			WHERE p.empresa_id = $empresa
+			AND p.deletedAt IS NULL
 			AND p.id = $presupuesto;";
         $data = $wpdb->get_results($sql, OBJECT);
         return array(
@@ -388,7 +389,7 @@ class Cuentas_Presupuesto_Models {
 		if($this->usuario_has_empresa($usuario_id, $empresa_id) && $this->empresa_has_presupuesto($empresa_id, $presupuesto_id)){
 			$deleted = $wpdb->delete("cu_presupuestos_has_categorias_has_subcategorias", array("presupuesto_id" => $presupuesto_id));
 			$deleted = $wpdb->delete("cu_presupuestos_has_categorias", array("presupuesto_id" => $presupuesto_id));
-			$deleted = $wpdb->delete("cu_presupuestos", array("id" => $presupuesto_id));
+			$deleted = $wpdb->update("cu_presupuestos", array("deletedAt" => current_time('timestamp')), array("id" => $presupuesto_id));
 			if($deleted > 0)
 				return array("success" => true);
 			else
@@ -404,7 +405,7 @@ class Cuentas_Presupuesto_Models {
 		$query = "SELECT SUM(monto) as saldo FROM cu_registros WHERE presupuesto_id = $presupuesto";
 		$results = $wpdb->get_results($query, OBJECT);
 		$saldo = $results[0]->saldo;
-		echo $wpdb->update('cu_presupuestos', array('saldo' => $saldo), array('id' => $presupuesto));
+		$wpdb->update('cu_presupuestos', array('saldo' => $saldo), array('id' => $presupuesto));
 		return null;
 	}
 

@@ -44,7 +44,10 @@ class Cuentas_Activator {
 		  `id` INT NOT NULL AUTO_INCREMENT,
 		  `nombre` VARCHAR(100) NULL DEFAULT NULL,
 		  `notas` TEXT NULL DEFAULT NULL,
-		  `image_url` TEXT NULL DEFAULT NULL,
+		  `imagen` TEXT NULL DEFAULT NULL,
+		  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		  `updatedAt` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+		  `deletedAt` TIMESTAMP NULL DEFAULT NULL,
 		  PRIMARY KEY (`id`))
 		ENGINE = InnoDB;";
 		dbDelta( $sql );		
@@ -83,8 +86,11 @@ class Cuentas_Activator {
 		  `cci` VARCHAR(150) NULL DEFAULT NULL,
 		  `saldo` DECIMAL(10,2) NULL DEFAULT '0',
 		  `notas` TEXT NULL DEFAULT NULL,
-		  `imagen_url` TEXT NULL DEFAULT NULL,
+		  `imagen` TEXT NULL DEFAULT NULL,
 		  `empresa_id` INT NOT NULL,
+		  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		  `updatedAt` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+		  `deletedAt` TIMESTAMP NULL DEFAULT NULL,
 		  PRIMARY KEY (`id`),
 		  INDEX `fk_cu_cuentas_cu_empresas1_idx` (`empresa_id` ASC) ,
 		  CONSTRAINT `fk_cu_cuentas_cu_empresas1`
@@ -102,6 +108,10 @@ class Cuentas_Activator {
 		  `id` INT NOT NULL AUTO_INCREMENT,
 		  `nombre` VARCHAR(200) NOT NULL,
 		  `empresa_id` INT NOT NULL,
+		  `imagen` TEXT NULL DEFAULT NULL,
+		  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		  `updatedAt` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+		  `deletedAt` TIMESTAMP NULL DEFAULT NULL,
 		  PRIMARY KEY (`id`),
 		  INDEX `fk_cu_categorias_cu_empresas1_idx` (`empresa_id` ASC) ,
 		  CONSTRAINT `fk_cu_categorias_cu_empresas1`
@@ -119,6 +129,10 @@ class Cuentas_Activator {
 		  `id` INT NOT NULL AUTO_INCREMENT,
 		  `nombre` VARCHAR(200) NOT NULL,
 		  `categoria_id` INT NOT NULL,
+		  `imagen` TEXT NULL DEFAULT NULL,
+		  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		  `updatedAt` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+		  `deletedAt` TIMESTAMP NULL DEFAULT NULL,
 		  PRIMARY KEY (`id`),
 		  INDEX `fk_cu_subcategorias_cu_categorias1_idx` (`categoria_id` ASC) ,
 		  CONSTRAINT `fk_cu_subcategorias_cu_categorias1`
@@ -140,10 +154,13 @@ class Cuentas_Activator {
 		  `entidad` VARCHAR(200) NULL DEFAULT NULL,
 		  `operacion` VARCHAR(200) NULL DEFAULT NULL,
 		  `monto` DECIMAL(10,2) NULL DEFAULT NULL,
-		  `imagen_url` TEXT NULL DEFAULT NULL,
+		  `imagen` TEXT NULL DEFAULT NULL,
 		  `cuenta_id` INT NOT NULL,
 		  `categoria_id` INT NOT NULL,
 		  `subcategoria_id` INT NULL,
+		  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		  `updatedAt` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+		  `deletedAt` TIMESTAMP NULL DEFAULT NULL,
 		  PRIMARY KEY (`id`),
 		  INDEX `fk_cu_registros_cu_cuentas1_idx` (`cuenta_id` ASC) ,
 		  INDEX `fk_cu_registros_cu_categorias1_idx` (`categoria_id` ASC) ,
@@ -172,6 +189,9 @@ class Cuentas_Activator {
 		$sql = "CREATE TABLE IF NOT EXISTS `cu_roles` (
 		  `id` INT NOT NULL AUTO_INCREMENT,
 		  `nombre` VARCHAR(100) NOT NULL,
+		  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		  `updatedAt` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+		  `deletedAt` TIMESTAMP NULL DEFAULT NULL,
 		  PRIMARY KEY (`id`),
 		  UNIQUE INDEX `nombre_UNIQUE` (`nombre` ASC) )
 		ENGINE = InnoDB;";
@@ -187,6 +207,9 @@ class Cuentas_Activator {
 		  `propio` TINYINT NOT NULL,
 		  `equipo` TINYINT NOT NULL,
 		  `otros` TINYINT NOT NULL,
+		  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		  `updatedAt` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+		  `deletedAt` TIMESTAMP NULL DEFAULT NULL,
 		  PRIMARY KEY (`id`),
 		  UNIQUE INDEX `accion_UNIQUE` (`accion` ASC) )
 		ENGINE = InnoDB;";
@@ -248,6 +271,9 @@ class Cuentas_Activator {
 		  `moneda` VARCHAR(10) NOT NULL DEFAULT 'PEN',
 		  `empresa_id` INT NOT NULL,
 		  `cuenta_id` INT NULL DEFAULT NULL,
+		  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+		  `updatedAt` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+		  `deletedAt` TIMESTAMP NULL DEFAULT NULL,
 		  PRIMARY KEY (`id`),
 		  INDEX `fk_cu_presupuestos_cu_empresas1_idx` (`empresa_id` ASC) ,
 		  INDEX `fk_cu_presupuestos_cu_cuentas1_idx` (`cuenta_id` ASC) ,
